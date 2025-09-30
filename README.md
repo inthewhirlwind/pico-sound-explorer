@@ -17,7 +17,8 @@ A comprehensive sound generation system for the Raspberry Pi Pico 2 featuring mu
 - Raspberry Pi Pico 2
 - 2x Push buttons (waveform selection, output toggle)
 - 4x LEDs (waveform indicators)
-- 3x Potentiometers (frequency, duty cycle, ADSR attack)
+- 6x Potentiometers (frequency, duty cycle, ADSR attack, decay, sustain, release)
+- 1x Analog multiplexer IC (e.g., CD4051 or CD4053)
 - Resistors for LED current limiting (220Ω recommended)
 - Pull-up resistors for buttons (10kΩ, optional if using internal pull-ups)
 - Audio output circuitry (RC low-pass filter recommended)
@@ -33,9 +34,11 @@ A comprehensive sound generation system for the Raspberry Pi Pico 2 featuring mu
 | GPIO5 | LED Output | Triangle wave indicator |
 | GPIO6 | LED Output | Sawtooth wave indicator |
 | GPIO7 | LED Output | Sine wave indicator |
-| GPIO26 | ADC Input | Frequency control potentiometer |
-| GPIO27 | ADC Input | Duty cycle control potentiometer |
+| GPIO22 | Digital Output | Analog multiplexer select |
+| GPIO26 | ADC Input | Frequency control / ADSR Sustain (multiplexed) |
+| GPIO27 | ADC Input | Duty cycle control / ADSR Release (multiplexed) |
 | GPIO28 | ADC Input | ADSR Attack time potentiometer |
+| GPIO29 | ADC Input | ADSR Decay time potentiometer |
 
 ### Circuit Diagram
 
@@ -182,9 +185,12 @@ make -j4
    - Sine wave (LED on GPIO7)
 3. **Output Control**: Press the output toggle button (GPIO3) to turn audio on/off
 4. **Parameter Adjustment**: Use potentiometers to control:
-   - Frequency (GPIO26): 20Hz to 20kHz
-   - Duty cycle (GPIO27): Square wave duty cycle
+   - Frequency (GPIO26): 20Hz to 20kHz (multiplexed)
+   - Duty cycle (GPIO27): Square wave duty cycle (multiplexed)
    - ADSR Attack (GPIO28): Attack time 0-2 seconds
+   - ADSR Decay (GPIO29): Decay time 0-2 seconds
+   - ADSR Sustain (GPIO26): Sustain level 0-100% (multiplexed)
+   - ADSR Release (GPIO27): Release time 0-5 seconds (multiplexed)
 
 ### UART Monitoring
 

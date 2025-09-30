@@ -56,6 +56,31 @@ Potentiometer Connections:
                      |
         GND ------[Pot Pin 3]
 
+    ADSR Decay Control (10kΩ Linear Pot):
+        +3.3V ----[Pot Pin 1]
+                     |
+        GPIO29 ----[Pot Pin 2 (Wiper)]
+                     |
+        GND ------[Pot Pin 3]
+
+Analog Multiplexer Circuit (CD4053 or similar):
+    
+    Multiplexer A (for GPIO26/ADC0):
+        Frequency Pot Wiper -> MUX A Input 0
+        Sustain Pot Wiper   -> MUX A Input 1
+        MUX A Output        -> GPIO26 (ADC0)
+        MUX A Select        -> GPIO22
+        
+    Multiplexer B (for GPIO27/ADC1):
+        Duty Cycle Pot Wiper -> MUX B Input 0
+        Release Pot Wiper    -> MUX B Input 1
+        MUX B Output         -> GPIO27 (ADC1)
+        MUX B Select         -> GPIO22
+        
+    Additional ADSR Potentiometers (10kΩ Linear):
+        ADSR Sustain: +3.3V -> [Pot] -> GND (wiper to MUX A Input 1)
+        ADSR Release: +3.3V -> [Pot] -> GND (wiper to MUX B Input 1)
+
 Power Connections:
     USB 5V -> VSYS
     USB GND -> GND
@@ -85,7 +110,8 @@ Component List:
 - 1x Raspberry Pi Pico 2
 - 2x Tactile push buttons
 - 4x LEDs (different colors recommended)
-- 3x 10kΩ linear potentiometers
+- 6x 10kΩ linear potentiometers (frequency, duty cycle, attack, decay, sustain, release)
+- 1x Analog multiplexer IC (CD4053 or CD4051)
 - 4x 220Ω resistors (LED current limiting)
 - 2x 10kΩ resistors (button pull-ups, optional)
 - 1x 1kΩ resistor (audio output)

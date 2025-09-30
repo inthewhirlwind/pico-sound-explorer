@@ -29,10 +29,13 @@ void uart_print_startup_info(void) {
     printf("- GPIO2: Waveform selection button\n");
     printf("- GPIO3: Output toggle button\n");
     printf("- GPIO4-7: LED indicators\n");
-    printf("- GPIO26: Frequency potentiometer\n");
-    printf("- GPIO27: Duty cycle potentiometer\n");
+    printf("- GPIO22: Analog multiplexer select\n");
+    printf("- GPIO26: Frequency potentiometer (mux A)\n");
+    printf("- GPIO27: Duty cycle potentiometer (mux A)\n");
     printf("- GPIO28: ADSR Attack potentiometer\n");
     printf("- GPIO29: ADSR Decay potentiometer\n");
+    printf("- GPIO26: ADSR Sustain potentiometer (mux B)\n");
+    printf("- GPIO27: ADSR Release potentiometer (mux B)\n");
     printf("- GPIO0: PWM audio output\n");
     printf("\n");
     printf("System ready!\n");

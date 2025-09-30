@@ -12,9 +12,15 @@ void adsr_envelope_init(void) {
     adc_init();
     
     // Make sure GPIO pins are high-impedance, no pullups etc
-    adc_gpio_init(ADSR_ATTACK_POT_PIN);
-    // Note: Only using 1 ADC pin for attack control
-    // Decay, sustain, and release use fixed values for simplicity
+    adc_gpio_init(ADSR_ATTACK_POT_PIN);  // GPIO28 - ADC2
+    adc_gpio_init(ADSR_DECAY_POT_PIN);   // GPIO29 - ADC3
+    // Note: Sustain and Release will use multiplexed ADC0 and ADC1
+    // Those pins are initialized in ui_controls_init()
+    
+    // Initialize multiplexer select pin
+    gpio_init(MUX_SELECT_PIN);
+    gpio_set_dir(MUX_SELECT_PIN, GPIO_OUT);
+    gpio_put(MUX_SELECT_PIN, false); // Start with frequency/duty cycle mode
 }
 
 void adsr_note_on(sound_system_t *system) {
@@ -126,8 +132,26 @@ void adsr_read_parameters(sound_system_t *system) {
     uint16_t attack_adc = adc_read();
     system->attack_time = (float)attack_adc / ADC_MAX_VALUE * 2.0f; // 0 to 2 seconds
     
-    // Fixed decay, sustain, and release for now (only 3 ADC pins available)
-    system->decay_time = 0.3f;    // 300ms decay time
-    system->sustain_level = 0.7f; // 70% sustain level
-    system->release_time = 0.5f;  // 500ms release time
+    // Read decay time potentiometer  
+    adc_select_input(3); // ADSR_DECAY_POT_PIN is ADC3 (GPIO29)
+    uint16_t decay_adc = adc_read();
+    system->decay_time = (float)decay_adc / ADC_MAX_VALUE * 2.0f; // 0 to 2 seconds
+    
+    // Read sustain and release using multiplexer
+    // Switch to ADSR mode (sustain/release)
+    gpio_put(MUX_SELECT_PIN, true);
+    sleep_us(10); // Allow mux to settle
+    
+    // Read sustain level potentiometer (multiplexed on ADC0)
+    adc_select_input(0);
+    uint16_t sustain_adc = adc_read();
+    system->sustain_level = (float)sustain_adc / ADC_MAX_VALUE; // 0 to 100%
+    
+    // Read release time potentiometer (multiplexed on ADC1)
+    adc_select_input(1);
+    uint16_t release_adc = adc_read();
+    system->release_time = (float)release_adc / ADC_MAX_VALUE * 5.0f; // 0 to 5 seconds
+    
+    // Switch back to frequency/duty cycle mode
+    gpio_put(MUX_SELECT_PIN, false);
 }
