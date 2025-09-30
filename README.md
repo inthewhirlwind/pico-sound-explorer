@@ -259,8 +259,9 @@ Add new waveforms by:
 
 ### Extending ADSR
 - Modify time ranges in `ui_adc_to_time()`
-- Add more ADC inputs for sustain/release control
+- **✓ IMPLEMENTED**: Full 4-parameter ADSR control with analog multiplexing
 - Implement exponential instead of linear curves
+- Add envelope curve shaping (logarithmic, exponential options)
 
 ### Audio Output Enhancement
 - Add RC low-pass filter for smoother output
