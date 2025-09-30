@@ -15,7 +15,13 @@
 #define FREQUENCY_POT_PIN 26    // ADC0 for frequency control
 #define DUTY_CYCLE_POT_PIN 27   // ADC1 for duty cycle control
 #define ADSR_ATTACK_POT_PIN 28  // ADC2 for ADSR attack
-// Note: Pico 2 only has 3 ADC pins (GPIO 26, 27, 28), so ADSR decay uses a fixed value
+#define ADSR_DECAY_POT_PIN 29   // ADC3 for ADSR decay
+#define ADSR_SUSTAIN_POT_PIN 26 // ADC0 - multiplexed with frequency (use mux select pin)
+#define ADSR_RELEASE_POT_PIN 27 // ADC1 - multiplexed with duty cycle (use mux select pin)
+
+#define MUX_SELECT_PIN 22       // GPIO22 for analog multiplexer control
+// When MUX_SELECT_PIN is LOW: ADC0=frequency, ADC1=duty_cycle
+// When MUX_SELECT_PIN is HIGH: ADC0=sustain, ADC1=release
 
 #define WAVEFORM_BUTTON_PIN 2   // Button for waveform selection
 #define OUTPUT_TOGGLE_PIN 3     // Button for output on/off

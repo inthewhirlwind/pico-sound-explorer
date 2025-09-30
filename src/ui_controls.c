@@ -35,8 +35,13 @@ void ui_controls_init(void) {
     
     // Initialize ADC for potentiometer reading
     adc_init();
-    adc_gpio_init(FREQUENCY_POT_PIN);
-    adc_gpio_init(DUTY_CYCLE_POT_PIN);
+    adc_gpio_init(FREQUENCY_POT_PIN);  // GPIO26 - ADC0 (multiplexed with sustain)
+    adc_gpio_init(DUTY_CYCLE_POT_PIN); // GPIO27 - ADC1 (multiplexed with release)
+    
+    // Initialize multiplexer control pin
+    gpio_init(MUX_SELECT_PIN);
+    gpio_set_dir(MUX_SELECT_PIN, GPIO_OUT);
+    gpio_put(MUX_SELECT_PIN, false); // Start in frequency/duty cycle mode
     
     printf("UI Controls initialized\n");
 }
@@ -77,6 +82,10 @@ void ui_read_potentiometers(sound_system_t *system) {
     }
     last_read_time = current_time;
     
+    // Ensure multiplexer is in frequency/duty cycle mode
+    gpio_put(MUX_SELECT_PIN, false);
+    sleep_us(10); // Allow mux to settle
+    
     // Read frequency potentiometer
     adc_select_input(0); // FREQUENCY_POT_PIN is ADC0 (GPIO26)
     uint16_t freq_adc = adc_read();
@@ -87,7 +96,7 @@ void ui_read_potentiometers(sound_system_t *system) {
     uint16_t duty_adc = adc_read();
     system->duty_cycle = ui_adc_to_duty_cycle(duty_adc);
     
-    // Read ADSR parameters
+    // Read ADSR parameters (this will handle its own multiplexer switching)
     adsr_read_parameters(system);
 }
 
