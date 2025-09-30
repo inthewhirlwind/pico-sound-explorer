@@ -1,0 +1,111 @@
+Raspberry Pi Pico 2 Sound Explorer - Hardware Schematic
+========================================================
+
+This is a text-based representation of the hardware connections.
+For a professional PCB design, consider using KiCad or similar tools.
+
+Pin Connections:
+---------------
+
+GPIO0 (PWM Output) -> Audio Output Circuit:
+    GPIO0 ----[1kΩ]----+----[Audio Jack Tip]
+                       |
+                    [100nF]
+                       |
+                     GND ----[Audio Jack Sleeve]
+
+Note: Add RC low-pass filter for better audio quality
+Alternative: GPIO0 ----[1kΩ]----+----[10nF]----[Audio Output]
+                                |
+                             [10kΩ]
+                                |
+                              GND
+
+GPIO2 (Waveform Button):
+    +3.3V ----[10kΩ]----GPIO2 ----[Button]----GND
+    
+GPIO3 (Output Toggle Button):
+    +3.3V ----[10kΩ]----GPIO3 ----[Button]----GND
+
+LED Indicators:
+    GPIO4 ----[220Ω]----[Square LED]----GND
+    GPIO5 ----[220Ω]----[Triangle LED]----GND
+    GPIO6 ----[220Ω]----[Sawtooth LED]----GND
+    GPIO7 ----[220Ω]----[Sine LED]----GND
+
+Potentiometer Connections:
+    
+    Frequency Control (10kΩ Linear Pot):
+        +3.3V ----[Pot Pin 1]
+                     |
+        GPIO26 ----[Pot Pin 2 (Wiper)]
+                     |
+        GND ------[Pot Pin 3]
+    
+    Duty Cycle Control (10kΩ Linear Pot):
+        +3.3V ----[Pot Pin 1]
+                     |
+        GPIO27 ----[Pot Pin 2 (Wiper)]
+                     |
+        GND ------[Pot Pin 3]
+    
+    ADSR Attack Control (10kΩ Linear Pot):
+        +3.3V ----[Pot Pin 1]
+                     |
+        GPIO28 ----[Pot Pin 2 (Wiper)]
+                     |
+        GND ------[Pot Pin 3]
+
+Power Connections:
+    USB 5V -> VSYS
+    USB GND -> GND
+    
+    Note: Pico 2 has internal 3.3V regulator
+
+Optional Enhancements:
+---------------------
+
+1. Audio Amplifier Circuit (LM386):
+    GPIO0 -> [RC Filter] -> LM386 Pin 3 -> Speaker
+    
+2. External ADC for more ADSR controls (MCP3008):
+    SPI connection to add 8 more analog inputs
+    
+3. MIDI Input (6N138 Optocoupler):
+    MIDI In -> Optocoupler -> GPIO RX pin
+    
+4. Display (SSD1306 OLED):
+    I2C connection for parameter display
+    
+5. Rotary Encoders instead of potentiometers:
+    Better for digital parameter control
+
+Component List:
+--------------
+- 1x Raspberry Pi Pico 2
+- 2x Tactile push buttons
+- 4x LEDs (different colors recommended)
+- 3x 10kΩ linear potentiometers
+- 4x 220Ω resistors (LED current limiting)
+- 2x 10kΩ resistors (button pull-ups, optional)
+- 1x 1kΩ resistor (audio output)
+- 1x 100nF capacitor (audio coupling)
+- 1x Audio jack (3.5mm)
+- Breadboard or PCB for assembly
+- Jumper wires
+
+PCB Design Considerations:
+-------------------------
+- Keep analog and digital sections separated
+- Use ground plane for noise reduction
+- Place decoupling capacitors near power pins
+- Route high-frequency signals (PWM) away from ADC inputs
+- Consider electromagnetic interference (EMI) shielding
+- Add test points for debugging
+
+Enclosure Design:
+----------------
+- Front panel: Potentiometers, buttons, LEDs, audio jack
+- Back panel: USB connector, power switch (optional)
+- Ventilation for heat dissipation (if using amplifier)
+- Access to BOOTSEL button for firmware updates
